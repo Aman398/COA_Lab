@@ -26,6 +26,10 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+
+//* ************************** search for       //* COA,         for the modified part of the code **************************************
+
+
 #include "gpgpusim_entrypoint.h"
 #include <stdio.h>
 
@@ -37,6 +41,8 @@
 #include "gpgpu-sim/icnt_wrapper.h"
 #include "option_parser.h"
 #include "stream_manager.h"
+
+//* COA, included war_counters, for printing the counters value only at last  
 #include "warp_counters.h"
 
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
@@ -71,6 +77,7 @@ void *gpgpu_sim_thread_sequential(void *ctx_ptr) {
 static void termination_callback() {
   printf("\n\n\t\tGPGPU-Sim: *** exit detected ***\n");
   fflush(stdout);
+  //* COA, printing the values of counters 
   std::printf("\t\tWaiting :                  %llu\n", (warp_state_counters[WAITING]));
   std::printf("\t\tIssued:                    %llu\n", (warp_state_counters[ISSUE]));
   std::printf("\t\tExcessALU:                 %llu\n", (warp_state_counters[XALU]));
@@ -81,8 +88,10 @@ static void termination_callback() {
                warp_state_counters[XMEM] + warp_state_counters[XALU] +
                warp_state_counters[OTHERS]));
   std::printf("\t\tWARPS:                     %llu\n\n\n", (warp_state_counters[WARP]));
+  //* MISSED are the warps which were un-checked because of break statement. 
+  // std::printf("\t\tMISSED:                    %llu\n", (warp_state_counters[MISSED]));
+  //* CYCLES is number of times the cycle function was called.
   // std::printf("\t\tCYCLE:     %llu\n", (warp_state_counters[CYCLE]));
-  // std::printf("\t\tPRODUCT:   %llu\n", (warp_state_counters[CYCLE]) * (warp_state_counters[WARP]));
 }
 
 void *gpgpu_sim_thread_concurrent(void *ctx_ptr) {
